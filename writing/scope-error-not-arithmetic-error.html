@@ -4,12 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>A wrong number is usually a scope error, not an arithmetic one — Terence Egbelo</title>
-<meta name="description" content="We reported a recall of 0.699. It was 0.641. Nothing had been miscalculated — the comparison was drawn across the wrong population, and no check we had could see it.">
+<meta name="description" content="I reported a recall of 0.699. It was 0.641. Nothing had been miscalculated — the comparison was drawn across the wrong population, and none of the checks I had could see it.">
 <link rel="canonical" href="https://terence-egbelo.com/writing/scope-error-not-arithmetic-error.html">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Terence Egbelo">
 <meta property="og:title" content="A wrong number is usually a scope error, not an arithmetic one">
-<meta property="og:description" content="We reported a recall of 0.699. It was 0.641. Nothing had been miscalculated — and by the time we found it, the figure had already reached the slides.">
+<meta property="og:description" content="I reported a recall of 0.699. It was 0.641. Nothing had been miscalculated — and by the time I found it, the figure had already reached the slides.">
 <meta property="og:url" content="https://terence-egbelo.com/writing/scope-error-not-arithmetic-error.html">
 <meta property="article:published_time" content="2026-08-12">
 <meta name="twitter:card" content="summary">
@@ -32,14 +32,14 @@
 
 <h1>A wrong number is usually a scope error, not an arithmetic one</h1>
 
-<p class="standfirst">We reported a recall of 0.699. It was 0.641. Nothing had been
+<p class="standfirst">I reported a recall of 0.699. It was 0.641. Nothing had been
 miscalculated.</p>
 
 <p>The arithmetic was correct throughout. Every step of the computation did exactly
 what it was written to do. The figure was wrong because the comparison was drawn
-across the wrong population, and no check we had was capable of noticing.</p>
+across the wrong population, and none of the checks I had could see it.</p>
 
-<p>By the time we caught it, 0.699 had left the script that produced it and entered
+<p>By the time I caught it, 0.699 had left the script that produced it and entered
 session notes, a weekly slide deck and an executive summary. Nearly six points, in
 this case, was the difference between &ldquo;extraction is good enough to
 scale&rdquo; and &ldquo;extraction needs another prompt iteration before we commit
@@ -51,7 +51,7 @@ expensive version of that decision.</p>
 <p>The pipeline extracts subject–predicate–object triples from biomedical papers.
 Evaluation compares what was extracted against a hand-curated ground truth.</p>
 
-<p>The scoring script flattened the extracted triples from all three evaluation
+<p>My scoring script flattened the extracted triples from all three evaluation
 papers into a single list before matching. Ground truth stayed correctly partitioned
 by paper. The predictions did not. So a triple extracted from paper A could be
 matched against a ground truth triple curated from paper B — and where both papers
@@ -71,12 +71,12 @@ precisely why it survived: half the metrics looked exactly as they should.</p>
 <p>The miss categorisation shifted the same way, and more instructively. The share
 of misses where both entities had been extracted but not correctly paired went from
 74% to 77%. Reassuringly stable. The absolute count went from 35 to 43. There was
-23% more recoverable work sitting in that category than we had told anyone, and the
+23% more recoverable work sitting in that category than I had told anyone, and the
 percentage — the number we had been quoting — concealed it completely.</p>
 
 <h2>The figure survived because it was mildly encouraging</h2>
 
-<p>Every check we had was downstream of the bug, so none of them could see it.</p>
+<p>Every check I had was downstream of the bug, so none of them could see it.</p>
 
 <p>It was also plausible. It sat close to the previous prompt iteration's result and
 slightly above it, which is exactly the shape of finding that attracts no scrutiny.
