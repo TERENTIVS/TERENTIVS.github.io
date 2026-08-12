@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>About — Terence Egbelo</title>
+<meta name="description" content="Terence Egbelo: PhD in interpretable link prediction on heterogeneous knowledge graphs; currently building a document-to-knowledge-graph platform for Penn State.">
+<link rel="canonical" href="https://terence-egbelo.com/about.html">
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content="Terence Egbelo">
+<meta property="og:title" content="About — Terence Egbelo">
+<meta property="og:description" content="PhD in interpretable link prediction on heterogeneous knowledge graphs; currently building a document-to-knowledge-graph platform for Penn State.">
+<meta property="og:url" content="https://terence-egbelo.com/about.html">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <a class="home" href="/">Terence Egbelo</a>
+  <nav>
+    <a href="/about.html" aria-current="page">About</a>
+    <a href="https://www.linkedin.com/in/terenceegbelo">LinkedIn</a>
+    <a href="https://github.com/TERENTIVS">GitHub</a>
+  </nav>
+</header>
+
+<main>
+
+<h1>About</h1>
+
+<p class="standfirst">Machine learning engineer and scientist, based in London.
+Knowledge graphs, and the evaluation problems they create.</p>
+
+<p>I work on turning fragmented, unstructured sources into graphs that can be
+queried and trusted, and on the machine learning that ranks and predicts over them.
+In practice that means ontology and schema design, entity resolution across sources
+that disagree with each other, relationship extraction from documents, provenance
+modelling, and graph learning for link prediction.</p>
+
+<h2>Now</h2>
+
+<p>I am sole engineer on a literature-to-knowledge-graph platform for the
+<a href="https://github.com/KoslickiLab">Koslicki Lab</a> at Pennsylvania State
+University, contracted from London. The pipeline screens roughly 2.9 million
+candidate records down to a working corpus of 100,000 documents, extracts structured
+entities and relationships from the ~90,000 available in full text, and delivers a
+Neo4j graph in which every edge carries the source document and the exact text it
+derived from. A LightGCN-style graph neural network ranks interventions by the
+quality of the evidence behind them, with post-hoc attribution over its output.</p>
+
+<p>I also hold a postdoctoral position at Evotec, working on record linkage and data
+quality for a commercial predictive service, and I am a Technical Champion in the
+NIH-funded <a href="https://ncats.nih.gov/research/research-activities/translator">NCATS
+Biomedical Data Translator</a> consortium, which operates one of the largest
+federated knowledge graphs in production.</p>
+
+<h2>Before</h2>
+
+<p>My PhD, at the University of Sheffield and co-funded by Evotec, was on
+interpretable completion of biomedical knowledge graphs. Rather than embeddings, it
+uses counts of typed paths through the graph, so every prediction traces back to
+named entities and relations. Its main contribution is <strong>Inverse Node
+Frequency</strong>, a feature transformation adapted from inverse document
+frequency that corrects for degree bias — the tendency of path-based methods to
+predict well on densely connected entities and badly on sparse ones, which are
+usually the ones worth predicting. It outperforms the field-standard Degree-Weighted
+Path Count on recall for low-connectivity entities, and holds that advantage on an
+external test set never previously used for the task.</p>
+
+<p>A result I am fonder of than the headline one: a set of features that appeared
+highly predictive turned out, under analysis, to be a topological artefact, and the
+affected results were discounted. The interpretable method made that visible. An
+embedding model would have shipped the number.</p>
+
+<p>Before research I spent four years in investment banking and corporate finance in
+London, Munich and Cologne, covering energy, utilities and renewables, and mergers
+and acquisitions. I have an MSc in Data Science and Artificial Intelligence from
+Queen Mary University of London and a BA in Economics from Dartmouth College. I
+speak German.</p>
+
+<h2>Contact</h2>
+
+<p><a href="mailto:terence.egbelo@gmail.com">terence.egbelo@gmail.com</a> ·
+<a href="https://www.linkedin.com/in/terenceegbelo">LinkedIn</a> ·
+<a href="https://github.com/TERENTIVS">GitHub</a></p>
+
+<p class="backlink"><a href="/">← Home</a></p>
+
+</main>
+</div>
+</body>
+</html>

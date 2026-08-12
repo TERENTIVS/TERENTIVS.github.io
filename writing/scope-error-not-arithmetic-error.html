@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>A wrong number is usually a scope error, not an arithmetic one — Terence Egbelo</title>
+<meta name="description" content="We reported a recall of 0.699. It was 0.641. Nothing had been miscalculated — the comparison was drawn across the wrong population, and no check we had could see it.">
+<link rel="canonical" href="https://terence-egbelo.com/writing/scope-error-not-arithmetic-error.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Terence Egbelo">
+<meta property="og:title" content="A wrong number is usually a scope error, not an arithmetic one">
+<meta property="og:description" content="We reported a recall of 0.699. It was 0.641. Nothing had been miscalculated — and by the time we found it, the figure had already reached the slides.">
+<meta property="og:url" content="https://terence-egbelo.com/writing/scope-error-not-arithmetic-error.html">
+<meta property="article:published_time" content="2026-08-12">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <a class="home" href="/">Terence Egbelo</a>
+  <nav>
+    <a href="/about.html">About</a>
+    <a href="https://www.linkedin.com/in/terenceegbelo">LinkedIn</a>
+    <a href="https://github.com/TERENTIVS">GitHub</a>
+  </nav>
+</header>
+
+<main>
+<article>
+
+<h1>A wrong number is usually a scope error, not an arithmetic one</h1>
+
+<p class="standfirst">We reported a recall of 0.699. It was 0.641. Nothing had been
+miscalculated.</p>
+
+<p>The arithmetic was correct throughout. Every step of the computation did exactly
+what it was written to do. The figure was wrong because the comparison was drawn
+across the wrong population, and no check we had was capable of noticing.</p>
+
+<p>By the time we caught it, 0.699 had left the script that produced it and entered
+session notes, a weekly slide deck and an executive summary. Nearly six points, in
+this case, was the difference between &ldquo;extraction is good enough to
+scale&rdquo; and &ldquo;extraction needs another prompt iteration before we commit
+GPU time to a hundred thousand articles&rdquo;. We were one meeting away from the
+expensive version of that decision.</p>
+
+<h2>The bug was a denominator, not a calculation</h2>
+
+<p>The pipeline extracts subject–predicate–object triples from biomedical papers.
+Evaluation compares what was extracted against a hand-curated ground truth.</p>
+
+<p>The scoring script flattened the extracted triples from all three evaluation
+papers into a single list before matching. Ground truth stayed correctly partitioned
+by paper. The predictions did not. So a triple extracted from paper A could be
+matched against a ground truth triple curated from paper B — and where both papers
+discussed the same intervention and outcome, which in a corpus on diet and metabolic
+disease is most of them, it scored as a hit.</p>
+
+<p>It is not a hit. Extraction is a per-document task. A model that reads paper A
+and produces a relationship attested only in paper B has not extracted anything; it
+has recovered a base rate of the domain. The correct denominator was never the
+evaluation set. It was always the paper.</p>
+
+<p>Constraining the match per-paper took true positives from 109 to 100 and recall
+from 0.699 to 0.641. Precision did not move at all — the extracted count never
+changed, only what those triples were permitted to match against. That asymmetry is
+precisely why it survived: half the metrics looked exactly as they should.</p>
+
+<p>The miss categorisation shifted the same way, and more instructively. The share
+of misses where both entities had been extracted but not correctly paired went from
+74% to 77%. Reassuringly stable. The absolute count went from 35 to 43. There was
+23% more recoverable work sitting in that category than we had told anyone, and the
+percentage — the number we had been quoting — concealed it completely.</p>
+
+<h2>The figure survived because it was mildly encouraging</h2>
+
+<p>Every check we had was downstream of the bug, so none of them could see it.</p>
+
+<p>It was also plausible. It sat close to the previous prompt iteration's result and
+slightly above it, which is exactly the shape of finding that attracts no scrutiny.
+A figure that contradicts a prior gets re-run. A figure that mildly confirms one
+gets copied into the next document.</p>
+
+<p>That copying is the more consequential failure. By the time 0.699 reached the
+slide deck it had been transcribed twice, and at each transcription it shed the
+context that would have let anyone check it: which ground truth version, which
+prompt version, which scoring regime, per-paper or aggregate matching. It arrived at
+the meeting stripped of everything that made it falsifiable. It had stopped being a
+measurement and become a number.</p>
+
+<p>An independent script in the same project, <code>deep_diagnosis.py</code>,
+computed overlapping quantities and would have disagreed. Nobody ran both. No rule
+said to.</p>
+
+<h2>Five requirements now govern any figure entering a document</h2>
+
+<p>The script fix was one line. The fix that mattered was to what a figure must
+carry before it is allowed into a document at all.</p>
+
+<p><strong>1. Script attribution.</strong> Every number in a table, slide or summary
+names the script and function that produced it, in the document:
+<code># Source: eval-v3/rescore_pair_detail.py → pair_analysis()</code>. Derived
+figures show the derivation.</p>
+
+<p><strong>2. Scope declaration.</strong> Every ratio states its denominator.
+&ldquo;74% of missed pairs&rdquo; is not a statement. It becomes one when it
+specifies which pairs,
+under which ground truth version, which prompt version, and which matching regime.
+This is the rule that would have caught the bug, and it exists because it
+didn't.</p>
+
+<p><strong>3. Re-derivation before propagation.</strong> A number may not be copied
+from a session note into a slide. It is re-derived from source and confirmed. Stale
+figures are treated as unverified figures, which is what they are.</p>
+
+<p><strong>4. Cross-checking against an independent computation.</strong> Where two
+scripts compute overlapping metrics, they are reconciled before either is presented.
+Where they disagree, the reason is stated — differing unit, threshold or scope —
+along with which is being used and why.</p>
+
+<p><strong>5. No ungrounded figures.</strong> If you cannot point at the line of
+output that produced a number, the number does not go in. &ldquo;Approximately 74%,
+from memory&rdquo; is not a finding.</p>
+
+<h2>Make the unverified claim harder to write than the verified one</h2>
+
+<p>The instinctive response to an error like this is a commitment to greater care.
+That is not a control. It is a disposition, and dispositions decay under
+deadline.</p>
+
+<p>What holds is structural. Once a slide template carries a source line beneath
+every table, filling it with a script path is easier than leaving it blank and
+hoping nobody asks. The discipline stops depending on whether anyone happens to feel
+rigorous on a Thursday afternoon.</p>
+
+<p>This matters more, not less, as pipelines accelerate. We screen roughly 2.9
+million candidate records and have extracted over a million triples. The volume of
+numbers a project like this generates has risen by orders of magnitude; the human
+capacity to sanity-check them has not moved at all. Provenance is the only property
+that scales.</p>
+
+<p>One recommendation to anyone building a comparable evaluation harness: adopt
+scope declaration first, before script attribution. Attribution tells you where a
+number came from, which is valuable once you already suspect it. Declaring the
+denominator forces the author to say what is being measured — which is what catches
+a matching-scope error while it is still cheap.</p>
+
+<p>Our data was already held to this standard. Every edge in the knowledge graph
+carries its source PMIDs and the exact sentence it derived from, so any assertion in
+the graph traces back to the text that produced it. It took an inflated recall
+figure to show that we were holding our measurements to a lower evidential standard
+than the thing they were measuring — which is the wrong way round, in a project
+whose entire output is provenance.</p>
+
+<p class="colophon">The extraction pipeline described here is built for the Koslicki
+Lab at Pennsylvania State University: LLM-based triple extraction from biomedical
+literature into a provenance-preserving Neo4j knowledge graph, with a graph neural
+network ranking interventions by evidence quality.</p>
+
+<p class="backlink"><a href="/">← Home</a></p>
+
+</article>
+</main>
+</div>
+</body>
+</html>
