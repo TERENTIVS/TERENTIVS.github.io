@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>A wrong number is usually a scope error, not an arithmetic one — Terence Egbelo</title>
-<meta name="description" content="I reported a recall of 0.699. It was 0.641. Nothing had been miscalculated — the comparison was drawn across the wrong population, and none of the checks I had could see it.">
+<title>A wrong number is usually a scope error, not an arithmetic one · Terence Egbelo</title>
+<meta name="description" content="I reported a recall of 0.699. It was 0.641. Nothing had been miscalculated. The comparison was drawn across the wrong population, and none of the checks I had could see it.">
 <link rel="canonical" href="https://terence-egbelo.com/writing/scope-error-not-arithmetic-error.html">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="Terence Egbelo">
 <meta property="og:title" content="A wrong number is usually a scope error, not an arithmetic one">
-<meta property="og:description" content="I reported a recall of 0.699. It was 0.641. Nothing had been miscalculated — and by the time I found it, the figure had already reached the slides.">
+<meta property="og:description" content="I reported a recall of 0.699. It was 0.641. Nothing had been miscalculated, and by the time I found it the figure had already reached the slides.">
 <meta property="og:url" content="https://terence-egbelo.com/writing/scope-error-not-arithmetic-error.html">
 <meta property="article:published_time" content="2026-08-12">
 <meta name="twitter:card" content="summary">
@@ -54,7 +54,7 @@ Evaluation compares what was extracted against a hand-curated ground truth.</p>
 <p>My scoring script flattened the extracted triples from all three evaluation
 papers into a single list before matching. Ground truth stayed correctly partitioned
 by paper. The predictions did not. So a triple extracted from paper A could be
-matched against a ground truth triple curated from paper B — and where both papers
+matched against a ground truth triple curated from paper B. Where both papers
 discussed the same intervention and outcome, which in a corpus on diet and metabolic
 disease is most of them, it scored as a hit.</p>
 
@@ -64,7 +64,7 @@ has recovered a base rate of the domain. The correct denominator was never the
 evaluation set. It was always the paper.</p>
 
 <p>Constraining the match per-paper took true positives from 109 to 100 and recall
-from 0.699 to 0.641. Precision did not move at all — the extracted count never
+from 0.699 to 0.641. Precision did not move at all, because the extracted count never
 changed, only what those triples were permitted to match against. That asymmetry is
 precisely why it survived: half the metrics looked exactly as they should.</p>
 
@@ -72,7 +72,7 @@ precisely why it survived: half the metrics looked exactly as they should.</p>
 of misses where both entities had been extracted but not correctly paired went from
 74% to 77%. Reassuringly stable. The absolute count went from 35 to 43. There was
 23% more recoverable work sitting in that category than I had told anyone, and the
-percentage — the number we had been quoting — concealed it completely.</p>
+percentage, the number we had been quoting, concealed it completely.</p>
 
 <h2>The figure survived because it was mildly encouraging</h2>
 
@@ -117,8 +117,8 @@ figures are treated as unverified figures, which is what they are.</p>
 
 <p><strong>4. Cross-checking against an independent computation.</strong> Where two
 scripts compute overlapping metrics, they are reconciled before either is presented.
-Where they disagree, the reason is stated — differing unit, threshold or scope —
-along with which is being used and why.</p>
+Where they disagree, the reason is stated (differing unit, threshold or scope) along
+with which is being used and why.</p>
 
 <p><strong>5. No ungrounded figures.</strong> If you cannot point at the line of
 output that produced a number, the number does not go in. &ldquo;Approximately 74%,
@@ -144,15 +144,15 @@ that scales.</p>
 <p>One recommendation to anyone building a comparable evaluation harness: adopt
 scope declaration first, before script attribution. Attribution tells you where a
 number came from, which is valuable once you already suspect it. Declaring the
-denominator forces the author to say what is being measured — which is what catches
+denominator forces the author to say what is being measured, which is what catches
 a matching-scope error while it is still cheap.</p>
 
 <p>Our data was already held to this standard. Every edge in the knowledge graph
 carries its source PMIDs and the exact sentence it derived from, so any assertion in
 the graph traces back to the text that produced it. It took an inflated recall
 figure to show that we were holding our measurements to a lower evidential standard
-than the thing they were measuring — which is the wrong way round, in a project
-whose entire output is provenance.</p>
+than the thing they were measuring. That is the wrong way round, in a project whose
+entire output is provenance.</p>
 
 <p class="colophon">The extraction pipeline described here is built for the Koslicki
 Lab at Pennsylvania State University: LLM-based triple extraction from biomedical
