@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Two thirds of my false positives were not extraction errors · Terence Egbelo</title>
+<meta name="description" content="I audited all 146 of them. A third were gaps in the reference set and a third were real relationships anchored to things that should not have been entities. Neither is fixed by touching the model.">
+<link rel="canonical" href="https://terence-egbelo.com/writing/precision-assumes-the-model-is-wrong.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="Terence Egbelo">
+<meta property="og:title" content="Two thirds of my false positives were not extraction errors">
+<meta property="og:description" content="I audited all 146 of them. Fixing what they actually were would not have involved touching the model.">
+<meta property="og:url" content="https://terence-egbelo.com/writing/precision-assumes-the-model-is-wrong.html">
+<meta property="article:published_time" content="2026-09-07">
+<meta name="twitter:card" content="summary">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="wrap">
+
+<header class="masthead">
+  <a class="home" href="/">Terence Egbelo</a>
+  <nav>
+    <a href="/about.html">About</a>
+    <a href="https://www.linkedin.com/in/terenceegbelo">LinkedIn</a>
+    <a href="https://github.com/TERENTIVS">GitHub</a>
+  </nav>
+</header>
+
+<main>
+<article>
+
+<h1>Two thirds of my false positives were not extraction errors</h1>
+
+<p class="standfirst">I audited all 146 of them. Fixing what they actually were
+would not have involved touching the model.</p>
+
+<p>The pipeline reads published biomedical papers and turns them into a knowledge
+graph. For each claim it finds it emits a subject, a relationship and an object:
+psyllium, a fibre supplement, <em>decreases</em> fasting plasma glucose, with the
+passage it came from attached to the edge. A graph neural network
+then ranks candidate dietary interventions by how strong the evidence behind them
+is.</p>
+
+<p>To know whether extraction is working, its output is compared against a reference
+set of five annotated papers. I designed that annotation process and built the tool it
+runs in. Domain experts work over the model&rsquo;s own output, keeping what is
+right, deleting what is wrong, and adding what it missed. On one paper the model
+produced 186 triples, the annotator removed 8 and added 120.</p>
+
+<p>The run discussed here is prompt version 5, which extracts over each paper twice,
+once paragraph by paragraph and then again sentence by sentence, and merges the two.
+Scoring is at the level of the entity pair: did the model connect psyllium to
+fasting plasma glucose at all, setting aside which relationship it picked. That gave
+386 unique pairs, and anything among them matching nothing in the reference counts
+as a false positive. There were 146.</p>
+
+<p>The efficient move is to sample thirty, categorise, extrapolate. I read all 146
+instead. At that size an exhaustive audit is a day&rsquo;s work, and sampling gives
+you the <em>rate</em> while hiding the <em>taxonomy</em>. The rate tells you how
+wrong you are; the taxonomy tells you which of your errors you can act on.</p>
+
+<h2>What they actually were</h2>
+
+<p><strong>Ground-truth gaps, 48 (33%).</strong> A relationship genuinely stated in
+the paper that the curator had not recorded. The extraction is right; the reference
+is incomplete. This is structural rather than accidental: the reference was seeded
+by an earlier version of the same system, so every improvement in extraction
+surfaces valid statements it never held. One paper on psyllium and gut microbiota
+drove much of this, where the model produced dozens of valid genus-level abundance
+relationships and the reference held only the high-level &ldquo;microbiota&rdquo;
+edge and a single named genus.</p>
+
+<p><strong>Noise entities, 47 (32%).</strong> A real relationship anchored to
+something that should not be an entity in this graph. Null objects where the model
+emitted <code>"object": null</code>, or fragments like &ldquo;traces&rdquo;.
+Study-design leakage, such as &ldquo;placebo group&rdquo; and &ldquo;treatment
+condition&rdquo;, surviving explicit prompt suppression. Table artefacts:
+bare percentages, abbreviations, self-referential parses where subject and object
+normalise to the same string.</p>
+
+<p><strong>Vague, 12 (8%).</strong> Hedged constructions too underspecified to
+adjudicate.</p>
+
+<p><strong>Over-decomposition, 11 (8%).</strong> One relationship split into several
+triples.</p>
+
+<p><strong>Out of scope, 6 (4%).</strong> Findings cited from other papers.</p>
+
+<p><strong>Deduplication failures, 6 (4%).</strong> The reference held an equivalent
+under a different surface form.</p>
+
+<p><strong>Ambiguous, 16 (11%).</strong> The residual I could not confidently assign
+on a first pass.</p>
+
+<p>Zero cross-sentence hallucinations, which had been the theoretical risk of adding
+a sentence pass.</p>
+
+<h2>The headline number would have sent us to fix the wrong thing</h2>
+
+<p>Precision below half reads as a model inventing relationships, and the response
+to that is to constrain the model. Another prompt iteration.</p>
+
+<p>But 65% of what the figure counted sat in the first two categories, and neither
+is fixed by touching the model. Ground-truth gaps are fixed by curating more
+reference. Noise entities are fixed in the entity vocabulary and in post-extraction
+filters. Taking the raw number at face value meant tuning a component that was
+largely working, while the two things actually degrading the measurement went
+untouched.</p>
+
+<p>Reclassifying the gaps and filtering the noise moves precision from .622 to .850
+on the any-match regime described below, recall unchanged at .680. That is an upper
+bound and has to be labelled as one: it rests on my adjudication of my own
+system&rsquo;s output.</p>
+
+<h2>Two ways to count a match, and the graph needs both</h2>
+
+<p>Auditing the false positives forced a question I had not asked: what counts as a
+match?</p>
+
+<p><strong>One-to-one.</strong> Each extracted pair claims at most one reference
+pair, and each reference pair is claimed once. This is what the knowledge graph
+itself runs on. A fact is an edge. Two extractions of the same relationship are not
+two facts; they collapse to one edge on import, and an evaluation scoring them as
+two successes measures something the graph will never contain.</p>
+
+<p><strong>Any-match.</strong> An extracted pair counts if it matches any reference
+pair, with no exclusivity. Not a lenient variant of the first: it answers
+<em>did we capture this attestation</em>, and attestations are not redundant here.
+Every edge carries its supporting passages as properties, and the ranking layer
+consumes them, because evidence quality is computed from the attestations
+themselves. Missing the fifth mention of a relationship costs nothing if four were
+captured, unless the fifth was the randomised controlled trial and the others were
+observational. Then the edge survives with its evidence quality understated, and the
+ranking is wrong for a reason that appears in no extraction metric.</p>
+
+<p>One-to-one measures whether the graph gets the right shape. Any-match measures
+whether the edges get the right evidence. Both need to be good, and they are
+different targets.</p>
+
+<h2>What this changes about reporting</h2>
+
+<p><strong>1. Both regimes, always, labelled.</strong> A precision or recall number
+means nothing without the matching rule behind it. On this run one-to-one returns
+174 true positives and any-match returns 240, a 38% difference on the same output
+against the same reference. So every figure now carries its regime on its face,
+as &ldquo;precision, any-match, noise-filtered, gaps-reclassified&rdquo;, and two
+numbers produced under different rules can no longer sit beside each other
+without the difference being visible.</p>
+
+<p><strong>2. Audit exhaustively while the count still allows it.</strong> At 146
+that is a day. At 1,500 it becomes a sampling exercise, and the taxonomy coarsens
+exactly as the stakes rise. The habit has to be established while it still feels
+unnecessary.</p>
+
+<p><strong>3. The reference is revisable, and the audit is how it gets
+revised.</strong> The 48 gaps were the starting point, not the total. A second pass
+over the same 146, looking only for anything addable, found 25 more sitting in other
+categories: eight granularity mismatches where both the specific and the summary
+relationship deserve to exist, since &ldquo;psyllium decreases fasting plasma
+glucose&rdquo; is valid even though the reference records &ldquo;psyllium improves
+glycemic control&rdquo;; eleven from the ambiguous group, where the text plainly
+supported the relationship on a second reading and the original uncertainty had been
+unfamiliarity with the paper; three filed as citations of other work that were the
+paper&rsquo;s own findings in citation-like language; and three surface-form
+mismatches belonging in the reference as synonyms.</p>
+
+<p>All 73 were checked against source text: 47 confirmed, 16 rejected as triples
+pulled from the bibliography, vague objects or duplicates of what the reference
+already held, and 10 referred to a domain expert. The confirmed additions took the
+reference from 444 triples to 491, after a vetting pass to catch entities too
+unspecific to be worth adding.</p>
+
+<p>Two things worth carrying elsewhere. An exhaustive audit is the cheapest source
+of ground-truth expansion available, because the model has already located the
+statements a curator passed over and put them in front of you, one line each, ready
+to adjudicate. And a first categorisation is provisional: a third of the candidate
+pool sat in categories I had assigned to something else, and only re-reading with
+the papers fresh moved it.</p>
+
+<h2>The general form</h2>
+
+<p>When an extracted statement disagrees with the reference, there are two candidate
+explanations: the model produced something the paper does not say, or the reference
+is missing something the paper does say. Precision assumes the first. It cannot
+represent the second, because the reference is what precision is measured against,
+and a gap in it is invisible to any metric computed from it. So the figure reports
+disagreement and leaves attribution to the reader, and readers attribute
+disagreement to the system under test.</p>
+
+<p>Here the second explanation accounted for a third of the disagreements. Only
+reading them individually separates the two, and that same reading tells you where
+the next iteration belongs: ours pointed at the entity vocabulary and the reference,
+while the headline number pointed at the model. The headline number was the one that
+would have been believed.</p>
+
+<p class="colophon">The pipeline described here is built for the Koslicki Lab at
+Pennsylvania State University: LLM-based triple extraction from biomedical
+literature into a provenance-preserving Neo4j knowledge graph, with a graph neural
+network ranking interventions by evidence quality.</p>
+
+<p class="backlink"><a href="/">← Home</a></p>
+
+</article>
+</main>
+</div>
+</body>
+</html>
