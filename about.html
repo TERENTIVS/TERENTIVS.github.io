@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>About · Terence Egbelo</title>
-<meta name="description" content="Terence Egbelo: PhD in interpretable link prediction on heterogeneous knowledge graphs; currently building a document-to-knowledge-graph platform for Penn State.">
+<meta name="description" content="Terence Egbelo: PhD in interpretable link prediction on heterogeneous knowledge graphs (Inverse Node Frequency, preprint on bioRxiv); currently building a document-to-knowledge-graph platform for Penn State.">
 <link rel="canonical" href="https://terence-egbelo.com/about.html">
 <meta property="og:type" content="profile">
 <meta property="og:site_name" content="Terence Egbelo">
@@ -46,12 +46,12 @@ modelling, and graph learning for link prediction.</p>
 <a href="https://github.com/KoslickiLab">Koslicki Lab</a> at Pennsylvania State
 University, contracted from London. The pipeline screens roughly 2.9 million
 candidate records down to a working corpus of 100,000 documents, extracts structured
-entities and relationships from the ~90,000 available in full text, and delivers a
-Neo4j graph in which every edge carries the source document and the exact text it
-derived from. A LightGCN-style graph neural network ranks interventions by the
+entities and relationships from the ~92,000 available in full text, and delivers a
+Neo4j graph of 81,500 entities and 1.8 million relationships in which every edge
+carries the source document and the exact text it derived from. A LightGCN-style graph neural network ranks interventions by the
 quality of the evidence behind them, with post-hoc attribution over its output.</p>
 
-<p>I also hold a postdoctoral position at Evotec, working on record linkage and data
+<p>I also held a postdoctoral position at Evotec, working on record linkage and data
 quality for a commercial predictive service, and I am a Technical Champion in the
 NIH-funded <a href="https://ncats.nih.gov/research/research-activities/translator">NCATS
 Biomedical Data Translator</a> consortium, which operates one of the largest
@@ -66,9 +66,11 @@ named entities and relations. Its main contribution is <strong>Inverse Node
 Frequency</strong>, a feature transformation adapted from inverse document
 frequency that corrects for degree bias: the tendency of path-based methods to predict well on
 densely connected entities and badly on sparse ones, which are usually the ones
-worth predicting. It outperforms the field-standard Degree-Weighted
-Path Count on recall for low-connectivity entities, and holds that advantage on an
-external test set never previously used for the task.</p>
+worth predicting. Applied to predicting which drug targets cause adverse events, it
+more than doubled recall on the least-studied targets compared with raw path counts
+and the field-standard Degree-Weighted Path Count, stayed competitive on ranking
+(hits@10), and was the most resilient of the three on an external pharmacovigilance
+set never previously used for the task.</p>
 
 <p>A result I am fonder of than the headline one: a set of features that appeared
 highly predictive turned out, under analysis, to be a topological artefact, and the
@@ -78,8 +80,18 @@ embedding model would have shipped the number.</p>
 <p>Before research I spent four years in investment banking and corporate finance in
 London, Munich and Cologne, covering energy, utilities and renewables, and mergers
 and acquisitions. I have an MSc in Data Science and Artificial Intelligence from
-Queen Mary University of London and a BA in Economics from Dartmouth College. I
+Queen Mary University of London, an MSc in Energy, Trade and Finance from Cass
+Business School (City, University of London), and a BA in Economics from Dartmouth College. I
 speak German.</p>
+
+<h2>Publications</h2>
+
+<p>Egbelo, T. M., Jeynes, J. C. G., Kurt, Z., Veettil, R. V. and Gillet, V. J.
+(2026). <a href="https://www.biorxiv.org/content/10.64898/2026.11.19.767791v1">Improving
+target–adverse event association prediction via Inverse Node Frequency
+transformation to mitigate knowledge graph topological bias</a>. <em>bioRxiv</em>,
+doi:10.64898/2026.11.19.767791. Code (MIT):
+<a href="https://github.com/TERENTIVS/INF_KGC">github.com/TERENTIVS/INF_KGC</a>.</p>
 
 <h2>Contact</h2>
 
